@@ -3,38 +3,57 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
 
-    <mirrors>
-        <!-- 阿里云公共仓库镜像 -->
-        <mirror>
-            <id>aliyun-public</id>
-            <name>Aliyun Public Maven Repository</name>
-            <url>https://maven.aliyun.com/repository/public</url>
-            <mirrorOf>central</mirrorOf>
-        </mirror>
-    </mirrors>
+    <!-- 香港集群不使用阿里云镜像，直接访问 Maven Central 和其他仓库 -->
+    <!-- 如果需要使用阿里云镜像，请切换到北京集群 -->
 
     <profiles>
         <profile>
             <id>custom-repos</id>
             <repositories>
-                <!-- Aspose 仓库 -->
+                <!-- Maven Central 直接访问 -->
                 <repository>
-                    <id>aspose-maven-repository</id>
-                    <url>https://repository.aspose.com/repo</url>
+                    <id>central</id>
+                    <name>Maven Central</name>
+                    <url>https://repo1.maven.org/maven2/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
                     <snapshots>
                         <enabled>false</enabled>
                     </snapshots>
-                </repository>
-                <!-- JBoss 仓库 -->
-                <repository>
-                    <id>jboss-maven-repository</id>
-                    <url>https://repository.jboss.org/maven2</url>
                 </repository>
                 <!-- OSGeo 仓库，包含 jai-core 和 jai-codec 依赖 -->
                 <repository>
                     <id>osgeo</id>
                     <name>OSGeo Release Repository</name>
                     <url>https://repo.osgeo.org/repository/release/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+                <!-- Aspose 仓库 -->
+                <repository>
+                    <id>aspose-maven-repository</id>
+                    <name>Aspose Maven Repository</name>
+                    <url>https://repository.aspose.com/repo/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+                <!-- JBoss 仓库 -->
+                <repository>
+                    <id>jboss</id>
+                    <name>JBoss Repository</name>
+                    <url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
                     <snapshots>
                         <enabled>false</enabled>
                     </snapshots>
