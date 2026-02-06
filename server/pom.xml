@@ -35,6 +35,15 @@
             <id>jboss-maven-repository</id>
             <url>https://repository.jboss.org/maven2</url>
         </repository>
+        <!-- OSGeo 仓库，包含 jai-core 和 jai-codec 依赖 -->
+        <repository>
+            <id>osgeo</id>
+            <name>OSGeo Release Repository</name>
+            <url>https://repo.osgeo.org/repository/release/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
     </repositories>
 
     <dependencies>
