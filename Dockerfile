@@ -1,10 +1,11 @@
 FROM maven:3.9.8-eclipse-temurin-21 AS build
 WORKDIR /app
 COPY pom.xml ./
+COPY .mvn .mvn
 COPY server/pom.xml server/pom.xml
-RUN mvn -B -DskipTests -pl server -am dependency:go-offline
+RUN mvn -B -DskipTests -pl server -am dependency:go-offline -s .mvn/settings.xml
 COPY . .
-RUN mvn -B -DskipTests -pl server -am clean package
+RUN mvn -B -DskipTests -pl server -am clean package -s .mvn/settings.xml
 
 FROM crpi-wj9nu4mw74znjcbt.cn-shenzhen.personal.cr.aliyuncs.com/resource-pool/aireach-resource:file-preview-base4.4.0
 COPY --from=build /app/server/target/kkFileView-*.tar.gz /opt/
