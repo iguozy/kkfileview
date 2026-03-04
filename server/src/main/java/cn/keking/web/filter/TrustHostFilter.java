@@ -40,10 +40,18 @@ public class TrustHostFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         String url = WebUtils.getSourceUrl(request);
+        if (url == null) {
+            chain.doFilter(request, response);
+            return;
+        }
         String host = WebUtils.getHost(url);
-        assert host != null;
+        if (host == null) {
+            chain.doFilter(request, response);
+            return;
+        }
         if (isNotTrustHost(host)) {
             String html = this.notTrustHostHtmlView.replace("${current_host}", host);
             response.getWriter().write(html);

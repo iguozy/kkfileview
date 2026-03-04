@@ -24,12 +24,13 @@ import java.util.regex.Pattern;
 
 /**
  * @author : kl
- * create : 2020-12-27 1:30 上午
+ *         create : 2020-12-27 1:30 上午
  **/
 public class WebUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebUtils.class);
     private static final String BASE64_MSG = "base64";
+
     /**
      * 获取标准的URL
      *
@@ -39,7 +40,6 @@ public class WebUtils {
     public static URL normalizedURL(String urlStr) throws GalimatiasParseException, MalformedURLException {
         return io.mola.galimatias.URL.parse(urlStr).toJavaURL();
     }
-
 
     /**
      * 对文件名进行编码
@@ -53,7 +53,6 @@ public class WebUtils {
         }
         return name;
     }
-
 
     /**
      * 去除fullfilename参数
@@ -71,21 +70,22 @@ public class WebUtils {
     /**
      * 对URL进行编码
      */
-    public static String  urlEncoderencode(String urlStr) {
+    public static String urlEncoderencode(String urlStr) {
 
-        String fullFileName = getUrlParameterReg(urlStr, "fullfilename");  //获取流文件名
+        String fullFileName = getUrlParameterReg(urlStr, "fullfilename"); // 获取流文件名
         if (org.springframework.util.StringUtils.hasText(fullFileName)) {
             // 移除fullfilename参数
             urlStr = clearFullfilenameParam(urlStr);
         } else {
-            fullFileName = getFileNameFromURL(urlStr); //获取文件名
+            fullFileName = getFileNameFromURL(urlStr); // 获取文件名
         }
-        if (KkFileUtils.isIllegalFileName(fullFileName)) { //判断文件名是否带有穿越漏洞
+        if (KkFileUtils.isIllegalFileName(fullFileName)) { // 判断文件名是否带有穿越漏洞
             return null;
         }
-        if (!UrlEncoderUtils.hasUrlEncoded(fullFileName)) {  //判断文件名是否转义
+        if (!UrlEncoderUtils.hasUrlEncoded(fullFileName)) { // 判断文件名是否转义
             try {
-                urlStr = URLEncoder.encode(urlStr, "UTF-8").replaceAll("\\+", "%20").replaceAll("%3A", ":").replaceAll("%2F", "/").replaceAll("%3F", "?").replaceAll("%26", "&").replaceAll("%3D", "=");
+                urlStr = URLEncoder.encode(urlStr, "UTF-8").replaceAll("\\+", "%20").replaceAll("%3A", ":")
+                        .replaceAll("%2F", "/").replaceAll("%3F", "?").replaceAll("%26", "&").replaceAll("%3D", "=");
             } catch (UnsupportedEncodingException e) {
                 LOGGER.error("Failed to encode URL: {}", urlStr, e);
             }
@@ -106,22 +106,21 @@ public class WebUtils {
         if (strUrlParam == null) {
             return "";
         }
-        //每个键值为一组
+        // 每个键值为一组
         String[] arrSplit = strUrlParam.split("[&]");
         for (String strSplit : arrSplit) {
             String[] arrSplitEqual = strSplit.split("[=]");
-            //解析出键值
+            // 解析出键值
             if (arrSplitEqual.length > 1) {
-                //正确解析
+                // 正确解析
                 mapRequest.put(arrSplitEqual[0], arrSplitEqual[1]);
             } else if (!arrSplitEqual[0].equals("")) {
-                //只有参数没有值，不加入
+                // 只有参数没有值，不加入
                 mapRequest.put(arrSplitEqual[0], "");
             }
         }
         return mapRequest.get(name);
     }
-
 
     /**
      * 去掉url中的路径，留下请求参数部分
@@ -146,7 +145,8 @@ public class WebUtils {
     /**
      * 从url中剥离出文件名
      *
-     * @param url 格式如：http://www.com.cn/20171113164107_月度绩效表模板(新).xls?UCloudPublicKey=ucloudtangshd@weifenf.com14355492830001993909323&Expires=&Signature=I D1NOFtAJSPT16E6imv6JWuq0k=
+     * @param url 格式如：http://www.com.cn/20171113164107_月度绩效表模板(新).xls?UCloudPublicKey=ucloudtangshd@weifenf.com14355492830001993909323&Expires=&Signature=I
+     *            D1NOFtAJSPT16E6imv6JWuq0k=
      * @return 文件名
      */
     public static String getFileNameFromURL(String url) {
@@ -166,12 +166,13 @@ public class WebUtils {
 
     /**
      * 从url中剥离出文件名
+     * 
      * @param file 文件
      * @return 文件名
      */
     public static String getFileNameFromMultipartFile(MultipartFile file) {
         String fileName = file.getOriginalFilename();
-        //判断是否为IE浏览器的文件名，IE浏览器下文件名会带有盘符信
+        // 判断是否为IE浏览器的文件名，IE浏览器下文件名会带有盘符信
         // escaping dangerous characters to prevent XSS
         assert fileName != null;
         fileName = HtmlUtils.htmlEscape(fileName, KkFileUtils.DEFAULT_FILE_ENCODING);
@@ -187,7 +188,6 @@ public class WebUtils {
         }
         return fileName;
     }
-
 
     /**
      * 从url中获取文件后缀
@@ -250,12 +250,13 @@ public class WebUtils {
         }
         return null;
     }
+
     /**
-     *  判断地址是否正确
+     * 判断地址是否正确
      * 高 2022/12/17
      */
     public static boolean isValidUrl(String url) {
-        String regStr = "^((https|http|ftp|rtsp|mms|file)://)";//[.?*]表示匹配的就是本身
+        String regStr = "^((https|http|ftp|rtsp|mms|file)://)";// [.?*]表示匹配的就是本身
         Pattern pattern = Pattern.compile(regStr);
         Matcher matcher = pattern.matcher(url);
         return matcher.find();
@@ -263,23 +264,40 @@ public class WebUtils {
 
     /**
      * 将 Base64 字符串解码，再解码URL参数, 默认使用 UTF-8
+     * 
      * @param source 原始 Base64 字符串
      * @return decoded string
      *
-     * aHR0cHM6Ly9maWxlLmtla2luZy5jbi9kZW1vL%2BS4reaWhy5wcHR4 -> https://file.keking.cn/demo/%E4%B8%AD%E6%96%87.pptx -> https://file.keking.cn/demo/中文.pptx
+     *         aHR0cHM6Ly9maWxlLmtla2luZy5jbi9kZW1vL%2BS4reaWhy5wcHR4 ->
+     *         https://file.keking.cn/demo/%E4%B8%AD%E6%96%87.pptx ->
+     *         https://file.keking.cn/demo/中文.pptx
      */
     public static String decodeUrl(String source) {
         String url = decodeBase64String(source, StandardCharsets.UTF_8);
-        if (! StringUtils.isNotBlank(url)){
-            return null;
+        // Base64 解码成功且结果是有效 URL，直接返回
+        if (StringUtils.isNotBlank(url) && isValidUrl(url)) {
+            return url;
         }
-
-        return url;
+        // Base64 解码失败或结果不是有效 URL，尝试 URL 解码（支持 percent-encoded 的 url 参数）
+        try {
+            String urlDecoded = java.net.URLDecoder.decode(source, StandardCharsets.UTF_8);
+            if (StringUtils.isNotBlank(urlDecoded) && isValidUrl(urlDecoded)) {
+                return urlDecoded;
+            }
+        } catch (Exception e) {
+            LOGGER.warn("URL解码也失败: {}", e.getMessage());
+        }
+        // 都失败则返回原始值（可能是直接的 URL）
+        if (isValidUrl(source)) {
+            return source;
+        }
+        return null;
     }
 
     /**
      * 将 Base64 字符串使用指定字符集解码
-     * @param source 原始 Base64 字符串
+     * 
+     * @param source   原始 Base64 字符串
      * @param charsets 字符集
      * @return decoded string
      */
@@ -294,7 +312,7 @@ public class WebUtils {
         } catch (Exception e) {
             if (e.getMessage().toLowerCase().contains(BASE64_MSG)) {
                 LOGGER.error("url解码异常，接入方法错误未使用BASE64");
-            }else {
+            } else {
                 LOGGER.error("url解码异常，其他错误", e);
             }
             return null;
@@ -303,6 +321,7 @@ public class WebUtils {
 
     /**
      * 获取 url 的 host
+     * 
      * @param urlStr url
      * @return host
      */
@@ -317,6 +336,7 @@ public class WebUtils {
 
     /**
      * 获取 session 中的 String 属性
+     * 
      * @param request 请求
      * @return 属性值
      */
@@ -334,8 +354,9 @@ public class WebUtils {
 
     /**
      * 获取 session 中的 long 属性
+     * 
      * @param request 请求
-     * @param key 属性名
+     * @param key     属性名
      * @return 属性值
      */
     public static long getLongSessionAttr(HttpServletRequest request, String key) {
@@ -348,8 +369,9 @@ public class WebUtils {
 
     /**
      * session 中设置属性
+     * 
      * @param request 请求
-     * @param key 属性名
+     * @param key     属性名
      */
     public static void setSessionAttr(HttpServletRequest request, String key, Object value) {
         HttpSession session = request.getSession();
@@ -361,8 +383,9 @@ public class WebUtils {
 
     /**
      * 移除 session 中的属性
+     * 
      * @param request 请求
-     * @param key 属性名
+     * @param key     属性名
      */
     public static void removeSessionAttr(HttpServletRequest request, String key) {
         HttpSession session = request.getSession();
